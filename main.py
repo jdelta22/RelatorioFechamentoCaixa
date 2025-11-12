@@ -62,16 +62,16 @@ def configurar_estilos(caixa):
                 if cor:
                     cell.fill = fundo
 
-    aplicar_estilo('C4:C44')
+    aplicar_estilo('C4:C45')
     aplicar_estilo('G4:G10')
-    aplicar_estilo('B50:B55')
-    aplicar_estilo('B59:B62')
+    aplicar_estilo('B51:B56')
+    aplicar_estilo('B60:B63')
     aplicar_estilo('F11:G11', cor=True)
-    aplicar_estilo('C45', cor=True)
-    aplicar_estilo('C47', cor=True)
-    aplicar_estilo('B56', cor=True)
-    aplicar_estilo('B63', cor=True)
-    aplicar_estilo('C65', cor=True)
+    aplicar_estilo('C46', cor=True)
+    aplicar_estilo('C48', cor=True)
+    aplicar_estilo('B57', cor=True)
+    aplicar_estilo('B64', cor=True)
+    aplicar_estilo('C66', cor=True)
 
 
 def preencher_dados(caixa, tabela):
@@ -93,31 +93,32 @@ def preencher_dados(caixa, tabela):
         '000114': 'B17', # doce de leite pequeno
         '000040': 'B18', # doce de leite pote
         '000057': 'B19', # amendoin
-        '000085': 'B20', # nego bom
-        '000122': 'B21', # pé de moça
-        '000123': 'B22', # beiju recheado
-        '000117': 'B23', # biscoito alexandre
-        '000124': 'B24', # brigadeiro
-        '000121': 'B25', # pingo bel
-        '000068': 'B26', # frigelis preto
-        '000070': 'B27', # frigelis verde
-        '000069': 'B28', # frigelis vermelho
-        '000118': 'B29', # cocada grande
-        '000112': 'B30', # cocada pequena
-        '000073': 'B31', # bala de yogurte
-        '000087': 'B32', # pirulito
-        '000126': 'B33', # coqueiro
-        '000127': 'B34', # zambanana
-        '000075': 'B35', # coca
-        '000076': 'B36', # coca zero
-        '000079': 'B37', # fanta
-        '000078': 'B38', # sukita
-        '000077': 'B39', # guaraná
-        '000093': 'B40', # limoneto
-        '000080': 'B41', # agua
-        '000082': 'B42', # agua c/ gás
-        '000095': 'B43', # caixa de presente
-        '000096': 'B44', # estojo bolacho
+        '000033': 'B20', # castanha
+        '000085': 'B21', # nego bom
+        '000122': 'B22', # pé de moça
+        '000123': 'B23', # beiju recheado
+        '000117': 'B24', # biscoito alexandre
+        '000124': 'B25', # brigadeiro
+        '000121': 'B26', # pingo bel
+        '000068': 'B27', # frigelis preto
+        '000070': 'B28', # frigelis verde
+        '000069': 'B29', # frigelis vermelho
+        '000118': 'B30', # cocada grande
+        '000112': 'B31', # cocada pequena
+        '000073': 'B32', # bala de yogurte
+        '000087': 'B33', # pirulito
+        '000126': 'B34', # coqueiro
+        '000127': 'B35', # zambanana
+        '000075': 'B36', # coca
+        '000076': 'B37', # coca zero
+        '000079': 'B38', # fanta
+        '000078': 'B39', # sukita
+        '000077': 'B40', # guaraná
+        '000093': 'B41', # limoneto
+        '000080': 'B42', # agua
+        '000082': 'B43', # agua c/ gás
+        '000095': 'B44', # caixa de presente
+        '000096': 'B45', # estojo bolacho
         # CAIXAS
         '000009': 'F4', # Nazaré
         '000010': 'F5', # Queijo
