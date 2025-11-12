@@ -5,7 +5,10 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('C:\\Users\\jotao\\Desktop\\relatrorio caixa\\Lib\\site-packages\\tabula\\tabula-1.0.5-jar-with-dependencies.jar', 'tabula')],
+    datas=[
+        ("C:/Users/Fábrica/Desktop/projetosjoao/python/RelatorioFechamentoCaixa/venv/Lib/site-packages/tabula", "tabula"),
+        ("C:/Users/Fábrica/Desktop/projetosjoao/python/RelatorioFechamentoCaixa/venv/Lib/site-packages/jpype", "jpype"),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -14,6 +17,7 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
+
 pyz = PYZ(a.pure)
 
 exe = EXE(

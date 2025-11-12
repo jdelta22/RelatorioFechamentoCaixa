@@ -1,13 +1,55 @@
-# created by virtualenv automatically
+# 🧠 AMBIENTE VIRTUAL
+venv/
+.env/
+.env.bak/
+*.env
 
-dist/
-build/
+# 🧱 ARQUIVOS DE COMPILAÇÃO E CACHE PYTHON
 __pycache__/
 *.pyc
-*.pyo 
-.env/
-.venv/
-.idea/
+*.pyo
+*.pyd
+*.log
+*.tmp
+*.bak
+*.swp
+
+# 🧩 ARQUIVOS DO PYINSTALLER
+build/
+dist/
+*.spec
+
+# 🔥 ARQUIVOS TEMPORÁRIOS DO PYINSTALLER (quando executado)
+*.manifest
+*.dll
+*.exe
+
+# 🧰 CONFIGURAÇÕES DE SISTEMA
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 📦 DEPENDÊNCIAS GERADAS (não versionar pacotes)
+*.egg-info/
+*.egg
+*.whl
+
+# 📄 ARQUIVOS GERADOS PELO PROGRAMA
+*.pdf
+*.csv
+*.xlsx
+*.xls
+*.json
+*.txt
+
+# 📂 RESULTADOS DO TABULA OU LOGS
+output/
+reports/
+logs/
+
+# ⚙️ ARQUIVOS DE IDEs
 .vscode/
-venv/
-env/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
