@@ -3,6 +3,7 @@ import pandas as pd
 import openpyxl
 from openpyxl.styles import NamedStyle, PatternFill, Alignment, Font, Border, Side
 import jpype
+from datetime import datetime
 
 
 PDF_FILE = "VendasPorProdutos.pdf"
@@ -42,37 +43,72 @@ def configurar_estilos(caixa):
     moeda_style = NamedStyle(name='moeda', number_format='"R$" #,##0.00;[Red]"R$" -#,##0.00')
     moeda_style.alignment = Alignment(horizontal='right', vertical='bottom')
     moeda_style.font = Font(name='Calibri', size=14)
-    borda = Border(
-        left=Side(style='thin'),
-        right=Side(style='thin'),
-        top=Side(style='thin'),
-        bottom=Side(style='thin')
-    )
     fundo = PatternFill(fill_type="solid", fgColor="ffff00")
 
-    def aplicar_estilo(faixa, cor=False):
+    def aplicar_estilo(faixa, cor=False, borda_tipo="fina"):
+        """
+        Aplica estilo de moeda, cor de fundo opcional e borda personalizada
+        nas células do intervalo informado.
+        
+        faixa: ex. "C4:C41" ou "C42"
+        cor: se True, aplica cor de fundo
+        borda_tipo: "fina", "grossa" ou None
+        """
         intervalo = caixa[faixa]
-        # Se for uma célula única, transforme em lista
+
+        # 🔧 Ajusta se for uma única célula
         if not isinstance(intervalo, tuple):
             intervalo = [[intervalo]]
+
+        # 🧱 Define bordas conforme tipo
+        if borda_tipo == "grossa":
+            borda = Border(
+                left=Side(style="medium"),
+                right=Side(style="medium"),
+                top=Side(style="medium"),
+                bottom=Side(style="medium")
+            )
+        elif borda_tipo == "fina":
+            borda = Border(
+                left=Side(style="thin"),
+                right=Side(style="thin"),
+                top=Side(style="thin"),
+                bottom=Side(style="thin")
+            )
+        else:
+            borda = None
+
+        # 🖌️ Aplica os estilos
         for row in intervalo:
             for cell in row:
                 cell.style = moeda_style
-                cell.border = borda
                 if cor:
                     cell.fill = fundo
+                if borda:
+                    cell.border = borda
 
-    aplicar_estilo('C4:C45')
-    aplicar_estilo('G4:G10')
-    aplicar_estilo('B51:B56')
-    aplicar_estilo('B60:B63')
-    aplicar_estilo('F11:G11', cor=True)
-    aplicar_estilo('C46', cor=True)
-    aplicar_estilo('C48', cor=True)
-    aplicar_estilo('B57', cor=True)
-    aplicar_estilo('B64', cor=True)
-    aplicar_estilo('C66', cor=True)
+    aplicar_estilo('C4:C45') # valores de unidades
+    aplicar_estilo('G4:G10') # valores de caixas
+    aplicar_estilo('B51:B56') #valores de despesas
+    aplicar_estilo('B60:B63') # valores de recebimentos
+    aplicar_estilo('F11:G11', cor=True, borda_tipo ='grossa') # valor total de caixas
+    aplicar_estilo('C46', cor=True, borda_tipo ='grossa') # valor total de unidades
+    aplicar_estilo('C48', cor=True, borda_tipo ='grossa') # valor total de caixas + unidades
+    aplicar_estilo('B57', cor=True, borda_tipo ='grossa') # valor total de despesas
+    aplicar_estilo('B64', cor=True, borda_tipo ='grossa') # valor total de recebimentos
+    aplicar_estilo('C66', cor=True, borda_tipo ='grossa') # valor total de recebimentos em dinheiro - despesas
 
+def acertar_data(caixa):
+    data_atual = datetime.now().strftime("%d/%m/%Y")
+    caixa.merge_cells('A1:G1')
+    caixa['A1'] = f"CAIXA DIA {data_atual}"
+    caixa['A1'].font = Font(bold=True, size=16)
+    caixa['A1'].alignment = Alignment(horizontal='center', vertical='center')
+    caixa['A1'].border = Border(
+        left=Side(style="medium"),
+        right=Side(style="medium"),
+        top=Side(style="medium"),
+        bottom=Side(style="medium"))
 
 def preencher_dados(caixa, tabela):
     """Preenche os valores de quantidade e venda com base nos códigos."""
@@ -149,6 +185,7 @@ def gerar_excel(tabela):
         relatorio = openpyxl.load_workbook(EXCEL_MODELO, data_only=False)
         caixa = relatorio['Planilha1']
         configurar_estilos(caixa)
+        acertar_data(caixa)
         preencher_dados(caixa, tabela)
         relatorio.save(EXCEL_SAIDA)
         print(f"✅ Arquivo gerado com sucesso: {EXCEL_SAIDA}")

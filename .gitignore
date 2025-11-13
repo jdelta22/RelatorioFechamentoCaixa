@@ -3,7 +3,7 @@ venv/
 .env/
 .env.bak/
 *.env
-
+Lib/
 # 🧱 ARQUIVOS DE COMPILAÇÃO E CACHE PYTHON
 __pycache__/
 *.pyc
@@ -40,7 +40,7 @@ desktop.ini
 *.xlsx
 *.xls
 *.json
-*.txt
+
 
 # 📂 RESULTADOS DO TABULA OU LOGS
 output/
