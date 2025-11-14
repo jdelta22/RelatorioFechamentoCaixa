@@ -35,7 +35,7 @@ desktop.ini
 *.whl
 
 # 📄 ARQUIVOS GERADOS PELO PROGRAMA
-*.pdf
+
 *.csv
 *.xlsx
 *.xls
@@ -53,3 +53,5 @@ logs/
 *.iml
 *.sublime-project
 *.sublime-workspace
+
+CAIXA_fechado.xlsx
