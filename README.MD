@@ -11,7 +11,7 @@
 ## 🧾 Visão Geral
 
 Este projeto automatiza o processo de **leitura de relatórios de vendas em PDF** e gera uma **planilha Excel pré-formatada** para fechamento de caixa.  
-Ele combina o poder de **Pandas**, **Tabula** e **OpenPyXL** para extrair dados, tratá-los e aplicar formatações monetárias, bordas e cores automaticamente.
+Ele combina o poder de **Pandas**, **Tabula**, **Pdfplumber**, **regex* e **OpenPyXL** para extrair dados, tratá-los e aplicar formatações monetárias, bordas e cores automaticamente.
 
 ---
 
@@ -34,6 +34,9 @@ Ele combina o poder de **Pandas**, **Tabula** e **OpenPyXL** para extrair dados,
 | **pandas** | Limpeza e manipulação de dados |
 | **openpyxl** | Edição e formatação do Excel |
 | **jpype** | Interface entre Python e Java para o Tabula |
+| **pdfplumber** | Extração de textos do PDF |
+| **regex** | manipulção de textos |
+
 
 ---
 
@@ -86,6 +89,8 @@ objectivec
 Copiar código
 Lendo o arquivo VendasPorProdutos.pdf...
 ✅ Arquivo PDF lido com sucesso!
+Lendo o arquivo `RelatorioFechamentoCaixaBobina.pdf`...
+✅ Arquivo PDF lido com sucesso!
 ✅ Arquivo Excel gerado: CAIXA_fechado.xlsx
 O resultado será salvo automaticamente como CAIXA_fechado.xlsx
 
@@ -128,10 +133,6 @@ João Pedro Calaça Costa
 🪪 Licença
 Distribuído sob a licença MIT.
 Sinta-se livre para usar, modificar e distribuir com os devidos créditos.
-
-🏁 Exemplo Visual
-📎 Entrada: VendasPorProdutos.pdf
-📊 Saída: CAIXA_fechado.xlsx (totalmente formatado e pronto para uso)
 
 💬 "Automatizar o que é repetitivo é abrir espaço para pensar o que é estratégico."
 

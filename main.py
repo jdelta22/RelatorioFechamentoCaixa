@@ -2,22 +2,27 @@ import tabula
 import pandas as pd
 import openpyxl
 from openpyxl.styles import NamedStyle, PatternFill, Alignment, Font, Border, Side
-import jpype
+import pdfplumber
+import re
 from datetime import datetime
+import jpype
+
 
 
 PDF_FILE = "VendasPorProdutos.pdf"
 EXCEL_MODELO = "CAIXA_format.xlsx"
 EXCEL_SAIDA = "CAIXA_fechado.xlsx"
+PDF_RECEBIMENTOS = "RelatorioFechamentoCaixaBobina.pdf"
 
 
-def ler_pdf(caminho_pdf):
+
+def ler_pdf_produto(caminho_pdf):
     """Lê o PDF e retorna o DataFrame tratado."""
     try:
         tabelas = tabula.read_pdf(caminho_pdf, pages="all")
         print("✅ Arquivo PDF lido com sucesso!")
     except Exception as e:
-        print(f"❌ Erro ao ler o PDF: {e}")
+        print(f"❌ Erro ao ler o PDF: {caminho_pdf},{e}")
         return None
 
     tabela = tabelas[0]
@@ -37,6 +42,18 @@ def ler_pdf(caminho_pdf):
     tabela['Venda'] = pd.to_numeric(tabela['Venda'], errors='coerce')
 
     return tabela
+
+def ler_pdf_recebimentos(caminho_pdf):
+    try:
+        with pdfplumber.open("RelatorioFechamentoCaixaBobina.pdf") as pdf:
+            page = pdf.pages[0]
+            recebimentos = page.extract_text()
+            print("✅ Arquivo PDF lido com sucesso!")
+    except Exception as e:
+        print(f"❌ Erro ao ler o PDF: {caminho_pdf},{e}")
+        return None
+    
+    return recebimentos
 
 def configurar_estilos(caixa):
     """Aplica estilos nas células do Excel."""
@@ -110,7 +127,7 @@ def acertar_data(caixa):
         top=Side(style="medium"),
         bottom=Side(style="medium"))
 
-def preencher_dados(caixa, tabela):
+def preencher_dados_produtos(caixa, tabela):
     """Preenche os valores de quantidade e venda com base nos códigos."""
     mapeamento = {
         '000001': 'B4', # doce
@@ -178,15 +195,101 @@ def preencher_dados(caixa, tabela):
         except KeyError:
             continue
 
+def organizar_dados_recebimentos(recebimentos):
+    def parse_dav(recebimentos):
+        padrao = r"[A-Z ]+\s+([A-Z]{2})\s+(\d{1,3}(?:\.\d{3})*,\d{2})"
+        return re.findall(padrao, recebimentos)
 
-def gerar_excel(tabela):
+    def parse_sangrias(recebimentos):
+        padrao = r"DAV\s+([A-Z ]+)\s+(\d{1,3}(?:\.\d{3})*,\d{2})"
+        return re.findall(padrao, recebimentos)
+
+    def separar_secoes(recebimentos):
+        # Marcações claras no relatório
+        secoes = {
+            "dav": "",
+            "sangrias": "",
+            "totalizadores": ""
+        }
+
+        # Quebra em blocos
+        linhas = recebimentos.splitlines()
+
+        secao_atual = None
+
+        for linha in linhas:
+            l = linha.strip().upper()
+
+            if "DAV" in l and "VENDAS" in l:
+                secao_atual = "dav"
+                continue
+
+            if "LISTA DAS SANGRIAS" in l:
+                secao_atual = "sangrias"
+                continue
+
+            if "TOTALIZADORES" in l:
+                secao_atual = "totalizadores"
+                continue
+
+            if secao_atual:
+                secoes[secao_atual] += linha + "\n"
+
+        return secoes
+
+    def parse_relatorio(recebimentos):
+        secoes = separar_secoes(recebimentos)
+
+        # DAV (primeiro bloco)
+        dav = parse_dav(secoes["dav"])
+
+        # Sangrias
+        sangrias = parse_sangrias(secoes["sangrias"])
+
+        # Totalizadores (parte final)
+        totalizadores = parse_dav(secoes["totalizadores"])
+
+        return {
+            "dav": dav,
+            "sangrias": sangrias,
+            "totalizadores": totalizadores
+        }
+    
+    dav = dict(parse_relatorio(recebimentos)['dav'])
+    sangria = dict(parse_relatorio(recebimentos)['sangrias'])
+
+    return dav, sangria
+    
+def preencher_dados_recebimentos( caixa, dav, sangria):
+    for ab, val in dav.items():
+        if ab == 'DN':
+            caixa['B60'] = val
+        elif ab == 'CD':
+            caixa['B61'] = val
+        elif ab == 'PX':
+            caixa['B62'] = val
+        elif ab == 'PZ':
+            caixa['B63'] = val
+
+    linha_init = 51
+    for i, (desc, valor) in enumerate(sangria.items()):
+        linha = linha_init + i
+        if linha > 56:
+            break  # evita ultrapassar as 6 linhas da planilha
+
+        caixa[f"A{linha}"] = desc.strip()
+        caixa[f"B{linha}"] = valor
+    
+def gerar_excel(tabela, recebimentos):
     """Carrega modelo, aplica dados e salva resultado."""
     try:
         relatorio = openpyxl.load_workbook(EXCEL_MODELO, data_only=False)
         caixa = relatorio['Planilha1']
         configurar_estilos(caixa)
         acertar_data(caixa)
-        preencher_dados(caixa, tabela)
+        preencher_dados_produtos(caixa, tabela)
+        dav, sangria = organizar_dados_recebimentos(recebimentos)
+        preencher_dados_recebimentos(caixa, dav, sangria)
         relatorio.save(EXCEL_SAIDA)
         print(f"✅ Arquivo gerado com sucesso: {EXCEL_SAIDA}")
     except Exception as e:
@@ -195,9 +298,11 @@ def gerar_excel(tabela):
 
 def main():
     print(f"Lendo o arquivo `{PDF_FILE}`...\n")
-    tabela = ler_pdf(PDF_FILE)
-    if tabela is not None:
-        gerar_excel(tabela)
+    tabela = ler_pdf_produto(PDF_FILE)
+    print(f"Lendo o arquivo `{PDF_RECEBIMENTOS}`...\n")
+    recebimentos = ler_pdf_recebimentos(PDF_RECEBIMENTOS)
+    if tabela is not None and recebimentos is not None:
+        gerar_excel(tabela, recebimentos)
     input("\nPressione ENTER para fechar...")
 
 
