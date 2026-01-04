@@ -1,5 +1,6 @@
 # 🧠 AMBIENTE VIRTUAL
 venv/
+.venv/
 .env/
 .env.bak/
 *.env
@@ -55,3 +56,4 @@ logs/
 *.sublime-workspace
 
 CAIXA_fechado.xlsx
+main.spec
