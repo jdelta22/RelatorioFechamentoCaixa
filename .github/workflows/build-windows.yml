@@ -33,7 +33,7 @@ jobs:
           pip install pyinstaller
 
       - name: Gerar executável
-        run: pyinstaller --onefile --hidden-import=jpype main.py --hidden-import=openpyxl main.py
+        run: pyinstaller --onefile --hidden-import=jpype --hidden-import=openpyxl main.py
 
       - name: Salvar executável
         uses: actions/upload-artifact@v4
