@@ -6,8 +6,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ("/home/jotao22/Documentos/RelatorioFechamentoCaixa/.venv/lib/python3.13/site-packages/tabula/tabula-1.0.5-jar-with-dependencies.jar", "tabula"),
-        ("/home/jotao22/Documentos/RelatorioFechamentoCaixa/.venv/lib/python3.13/site-packages/jpype", "jpype"),
+        ("C:/Users/Fábrica/Desktop/projetosjoao/python/RelatorioFechamentoCaixa/venv/Lib/site-packages/tabula", "tabula"),
+        ("C:/Users/Fábrica/Desktop/projetosjoao/python/RelatorioFechamentoCaixa/venv/Lib/site-packages/jpype", "jpype"),
     ],
     hiddenimports=[],
     hookspath=[],
