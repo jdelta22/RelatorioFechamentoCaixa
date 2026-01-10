@@ -1,10 +1,10 @@
 import re
 from datetime import datetime
 
-import camelot
 import openpyxl
 import pandas as pd
 import pdfplumber
+import tabula
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side
 
 PDF_FILE = "VendasPorProdutos.pdf"
@@ -16,33 +16,27 @@ PDF_RECEBIMENTOS = "RelatorioFechamentoCaixaBobina.pdf"
 def ler_pdf_produto(caminho_pdf):
     """Lê o PDF e retorna o DataFrame tratado."""
     try:
-        tabelas = camelot.read_pdf(caminho_pdf, pages="1", flavor="stream")
+        tabelas = tabula.read_pdf(caminho_pdf, pages="all", stream=True)
         print("✅ Arquivo PDF lido com sucesso!")
     except Exception as e:
         print(f"❌ Erro ao ler o PDF: {caminho_pdf},{e}")
         return None
 
-    tabela = tabelas[0].df
+    tabela = tabelas[0]
+    colunas_remover = ["Barras", "Custo", "% Média", "Lucro bruto"]
+    tabela = tabela.drop(columns=colunas_remover, errors="ignore")
 
-    tabela = tabela.drop(0, axis=0)
-    tabela = tabela.drop(1, axis=0)
-    tabela = tabela.drop(3, axis=0)
-    tabela = tabela.drop(2, axis=1)
-    tabela = tabela.drop(5, axis=1)
-    tabela = tabela.drop(6, axis=1)
+    # Extrai código
+    tabela[["Codigo", "_"]] = tabela["Código UN"].str.split(" ", expand=True)
+    tabela["Codigo"] = tabela["Codigo"].astype(str).str[-6:]
+    tabela = tabela.drop(columns=["Código UN", "_"], errors="ignore")
+    tabela = tabela.set_index("Codigo")
 
-    tabela.reset_index(drop=True, inplace=True)
-    tabela.set_index(tabela.columns[0], inplace=True)
-    tabela.columns = [""] * len(tabela.columns)
-    tabela.columns = tabela.iloc[0]
-    tabela = tabela.drop(tabela.index[0])
-    tabela.index.name = None
-
-    tabela.iloc[:, 2] = tabela.iloc[:, 2].str.replace(",000", "")
-    tabela.iloc[:, 2] = pd.to_numeric(tabela.iloc[:, 2], errors="coerce")
-
-    tabela.iloc[:, 3] = tabela.iloc[:, 3].str.replace(",", ".")
-    tabela.iloc[:, 3] = pd.to_numeric(tabela.iloc[:, 3], errors="coerce")
+    # Limpeza numérica
+    tabela["Qtd"] = tabela["Qtd"].astype(str).str.replace(",000", "", regex=False)
+    tabela["Qtd"] = pd.to_numeric(tabela["Qtd"], errors="coerce")
+    tabela["Venda"] = tabela["Venda"].astype(str).str.replace(",", ".")
+    tabela["Venda"] = pd.to_numeric(tabela["Venda"], errors="coerce")
 
     return tabela
 
@@ -229,17 +223,17 @@ def organizar_dados_recebimentos(recebimentos):
         secao_atual = None
 
         for linha in linhas:
-            line = linha.strip().upper()
+            l = linha.strip().upper()
 
-            if "DAV" in line and "VENDAS" in line:
+            if "DAV" in l and "VENDAS" in l:
                 secao_atual = "dav"
                 continue
 
-            if "LISTA DAS SANGRIAS" in line:
+            if "LISTA DAS SANGRIAS" in l:
                 secao_atual = "sangrias"
                 continue
 
-            if "TOTALIZADORES" in line:
+            if "TOTALIZADORES" in l:
                 secao_atual = "totalizadores"
                 continue
 

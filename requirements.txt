@@ -1,5 +1,6 @@
 altgraph==0.17.4
 asttokens==3.0.0
+camelot-py==1.0.9
 cffi==2.0.0
 chardet==5.2.0
 charset-normalizer==3.4.4

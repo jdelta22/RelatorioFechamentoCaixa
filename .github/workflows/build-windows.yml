@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Baixar código
+      - name: Baixar código-fonte
         uses: actions/checkout@v4
 
       - name: Configurar Python
