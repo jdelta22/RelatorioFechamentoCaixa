@@ -62,29 +62,26 @@ def ler_pdf_recebimentos(caminho_pdf):
 
 def configurar_estilos(caixa):
     """Aplica estilos nas células do Excel."""
-    moeda_style = NamedStyle(
-        name="moeda", number_format='"R$" #,##0.00;[Red]"R$" -#,##0.00'
-    )
-    moeda_style.alignment = Alignment(horizontal="right", vertical="bottom")
-    moeda_style.font = Font(name="Calibri", size=14)
-    fundo = PatternFill(fill_type="solid", fgColor="ffff00")
+
+    # ✅ cria ou reutiliza o estilo
+    if "moeda" not in caixa.parent.named_styles:
+        moeda_style = NamedStyle(
+            name="moeda",
+            number_format='"R$" #,##0.00;[Red]"R$" -#,##0.00'
+        )
+        moeda_style.alignment = Alignment(horizontal="right", vertical="bottom")
+        moeda_style.font = Font(name="Calibri", size=14)
+
+        caixa.parent.add_named_style(moeda_style)
+
+    fundo = PatternFill(fill_type="solid", fgColor="FFFF00")
 
     def aplicar_estilo(faixa, cor=False, borda_tipo="fina"):
-        """
-        Aplica estilo de moeda, cor de fundo opcional e borda personalizada
-        nas células do intervalo informado.
-
-        faixa: ex. "C4:C41" ou "C42"
-        cor: se True, aplica cor de fundo
-        borda_tipo: "fina", "grossa" ou None
-        """
         intervalo = caixa[faixa]
 
-        # 🔧 Ajusta se for uma única célula
         if not isinstance(intervalo, tuple):
             intervalo = [[intervalo]]
 
-        # 🧱 Define bordas conforme tipo
         if borda_tipo == "grossa":
             borda = Border(
                 left=Side(style="medium"),
@@ -102,30 +99,24 @@ def configurar_estilos(caixa):
         else:
             borda = None
 
-        # 🖌️ Aplica os estilos
         for row in intervalo:
             for cell in row:
-                cell.style = moeda_style
+                cell.style = "moeda"  # 👈 usa o nome do estilo
                 if cor:
                     cell.fill = fundo
                 if borda:
                     cell.border = borda
 
-    aplicar_estilo("C4:C45")  # valores de unidades
-    aplicar_estilo("G4:G10")  # valores de caixas
-    aplicar_estilo("B51:B56")  # valores de despesas
-    aplicar_estilo("B60:B63")  # valores de recebimentos
-    aplicar_estilo("F11:G11", cor=True, borda_tipo="grossa")  # valor total de caixas
-    aplicar_estilo("C46", cor=True, borda_tipo="grossa")  # valor total de unidades
-    aplicar_estilo(
-        "C48", cor=True, borda_tipo="grossa"
-    )  # valor total de caixas + unidades
-    aplicar_estilo("B57", cor=True, borda_tipo="grossa")  # valor total de despesas
-    aplicar_estilo("B64", cor=True, borda_tipo="grossa")  # valor total de recebimentos
-    aplicar_estilo(
-        "C66", cor=True, borda_tipo="grossa"
-    )  # valor total de recebimentos em dinheiro - despesas
-
+    aplicar_estilo("C4:C45")
+    aplicar_estilo("G4:G10")
+    aplicar_estilo("B51:B56")
+    aplicar_estilo("B60:B63")
+    aplicar_estilo("F11:G11", cor=True, borda_tipo="grossa")
+    aplicar_estilo("C46", cor=True, borda_tipo="grossa")
+    aplicar_estilo("C48", cor=True, borda_tipo="grossa")
+    aplicar_estilo("B57", cor=True, borda_tipo="grossa")
+    aplicar_estilo("B64", cor=True, borda_tipo="grossa")
+    aplicar_estilo("C66", cor=True, borda_tipo="grossa")
 
 def acertar_data(caixa):
     data_atual = datetime.now().strftime("%d/%m/%Y")

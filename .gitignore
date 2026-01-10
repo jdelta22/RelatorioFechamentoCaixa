@@ -55,5 +55,5 @@ logs/
 *.sublime-project
 *.sublime-workspace
 
-CAIXA_fechado.xlsx
+*.xlsx
 main.spec
