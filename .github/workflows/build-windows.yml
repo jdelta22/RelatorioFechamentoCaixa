@@ -29,11 +29,10 @@ jobs:
       - name: Instalar dependências Python
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pandas jpype1 tabula-py openpyxl pdfplumber pyinstaller
 
       - name: Gerar executável
-        run: pyinstaller --onefile --hidden-import=jpype main.py
+        run: pyinstaller --onefile --hidden-import=jpype --hidden-import=tabula-py --hidden-import=openpyxl --add-data "%PythonSitePackages%\tabula\tabula-1.0.5-jar-with-dependencies.jar;tabula" main.py
 
       - name: Salvar executável
         uses: actions/upload-artifact@v4
