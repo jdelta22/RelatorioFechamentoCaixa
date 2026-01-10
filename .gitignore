@@ -38,7 +38,6 @@ desktop.ini
 # 📄 ARQUIVOS GERADOS PELO PROGRAMA
 
 *.csv
-*.xlsx
 *.xls
 *.json
 
@@ -55,5 +54,3 @@ logs/
 *.sublime-project
 *.sublime-workspace
 
-*.xlsx
-main.spec

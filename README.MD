@@ -30,10 +30,9 @@ Ele combina o poder de **Pandas**, **Tabula**, **Pdfplumber**, **regex* e **Open
 
 | Biblioteca | Função |
 |-------------|--------|
-| **tabula-py** | Extração de tabelas do PDF |
+| **camelot-py** | Extração de tabelas do PDF | >>> por questões de CI/CD foi necessario substituir o tabula-py
 | **pandas** | Limpeza e manipulação de dados |
 | **openpyxl** | Edição e formatação do Excel |
-| **jpype** | Interface entre Python e Java para o Tabula |
 | **pdfplumber** | Extração de textos do PDF |
 | **regex** | manipulção de textos |
 
@@ -43,8 +42,7 @@ Ele combina o poder de **Pandas**, **Tabula**, **Pdfplumber**, **regex* e **Open
 ## 📦 Instalação
 Atenção!!!!!
 
-Necessario instalação do Python(https://www.python.org/) e alguma distribuição JDK para Java
-neste projeto eu tinha instalado a Temurin® JDK(Temurin® JDK) que pode ser adiquirida em https://adoptium.net/pt-BR/temurin/releases
+Necessario instalação do Python 3.11 (https://www.python.org/downloads/release/python-3119/) 
 
 Clone o repositório e configure o ambiente virtual:
 
@@ -68,7 +66,7 @@ Copiar código
 RelatorioFechamentoCaixa/
 │
 ├── main.py                # Script principal
-├── modelo_caixa.xlsx      # Modelo de planilha Excel (pré-formatado)
+├── CAIXA_format.xlsx      # Modelo de planilha Excel (pré-formatado)
 ├── VendasPorProdutos.pdf  # Relatório PDF de exemplo
 ├── CAIXA_fechado.xlsx     # Planilha gerada automaticamente
 ├── requirements.txt
